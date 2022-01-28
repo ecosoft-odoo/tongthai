@@ -13,5 +13,10 @@
         "sale_management",
         "purchase",
         "purchase_request",
+        "crm",
+        "account",
+        "date_range",
+        "report_xlsx",
+        "account_financial_report",
     ]
 }
