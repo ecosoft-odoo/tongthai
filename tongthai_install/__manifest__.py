@@ -18,5 +18,7 @@
         "date_range",
         "report_xlsx",
         "account_financial_report",
+        "mis_builder",
+        "mis_template_financial_report",
     ]
 }
