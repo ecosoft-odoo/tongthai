@@ -17,8 +17,10 @@
         "account",
         "date_range",
         "report_xlsx",
+        "report_xlsx_helper",
         "account_financial_report",
         "mis_builder",
         "mis_template_financial_report",
+       "account_asset_management",
     ]
 }
