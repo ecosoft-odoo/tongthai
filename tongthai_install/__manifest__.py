@@ -21,6 +21,11 @@
         "account_financial_report",
         "mis_builder",
         "mis_template_financial_report",
-       "account_asset_management",
+        "account_asset_management",
+        "l10n_th_account_tax",
+        "l10n_th_account_tax_expense",
+        "l10n_th_account_tax_multi",
+        "l10n_th_account_tax_report",
+        "l10n_th_account_wht_cert_form",
     ]
 }
