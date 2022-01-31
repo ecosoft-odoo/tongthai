@@ -27,5 +27,6 @@
         "l10n_th_account_tax_multi",
         "l10n_th_account_tax_report",
         "l10n_th_account_wht_cert_form",
+        "dms",
     ]
 }
