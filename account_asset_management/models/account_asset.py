@@ -520,7 +520,12 @@ class AccountAsset(models.Model):
 
     def validate(self):
         for asset in self:
-            if asset.company_currency_id.is_zero(asset.value_residual):
+            if (
+                asset.company_currency_id.compare_amounts(
+                    asset.value_residual, asset.salvage_value
+                )
+                == 0
+            ):
                 asset.state = "close"
             else:
                 asset.state = "open"
@@ -982,7 +987,9 @@ class AccountAsset(models.Model):
         day_amount = 0.0
         if self.days_calc:
             days = (depreciation_stop_date - depreciation_start_date).days + 1
-            day_amount = self.depreciation_base / days
+            purchase_value = self.purchase_value or 0.0
+            salvage_value = self.salvage_value or 0.0
+            day_amount = (purchase_value - salvage_value) / days
 
         for i, entry in enumerate(table):
             if self.method_time == "year":
@@ -1191,6 +1198,15 @@ class AccountAsset(models.Model):
         """ use this method to customise the name of the accounting entry """
         return (self.code or str(self.id)) + "/" + str(seq)
 
+    def _get_asset_line_domain(self, date_end):
+        return [
+            ("asset_id", "in", self.ids),
+            ("type", "=", "depreciate"),
+            ("init_entry", "=", False),
+            ("line_date", "<=", date_end),
+            ("move_check", "=", False),
+        ]
+
     def _compute_entries(self, date_end, check_triggers=False):
         # TODO : add ir_cron job calling this method to
         # generate periodical accounting entries
@@ -1206,13 +1222,7 @@ class AccountAsset(models.Model):
                         asset.compute_depreciation_board()
 
         depreciations = self.env["account.asset.line"].search(
-            [
-                ("asset_id", "in", self.ids),
-                ("type", "=", "depreciate"),
-                ("init_entry", "=", False),
-                ("line_date", "<=", date_end),
-                ("move_check", "=", False),
-            ],
+            self._get_asset_line_domain(date_end),
             order="line_date",
         )
         for depreciation in depreciations:
